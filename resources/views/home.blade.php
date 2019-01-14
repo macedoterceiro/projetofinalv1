@@ -14,7 +14,9 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <div class="card-footer">
+                        <a href="/contatos" class="btn btn-sn btn-primary">Lista de Contatos</a>
+                    </div>
                 </div>
             </div>
         </div>

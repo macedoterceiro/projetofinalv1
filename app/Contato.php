@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contato extends Model
 {
     function usuario(){
-        return $this->belongsTo('App\Usuario');
+        return $this->belongsTo('App\User');
     }
     function telefones(){
         return $this->hasMany('App\Telefone');

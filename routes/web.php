@@ -18,3 +18,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/contatos', 'ControladorContato@index');
+Route::get('/contatos/novocontato', 'ControladorContato@create');
+Route::post('/contatos', 'ControladorContato@store');
+Route::get('/contatos/apagar/{id}', 'ControladorContato@destroy');
+Route::get('/contatos/editar/{id}', 'ControladorContato@edit');
+Route::post('/contatos/{id}', 'ControladorContato@update');
+
+Route::get('/contatos/{id}/telefones', 'ControladorTelefone@index');
+Route::get('/contatos/{id}/telefones/novotelefone', 'ControladorTelefone@create');
+Route::post('/contatos/{id}/telefones', 'ControladorTelefone@store');
+Route::get('/contatos/{id}/telefones/apagar/{tid}', 'ControladorTelefone@destroy');
+Route::get('/contatos/{id}/telefones/editar/{tid}', 'ControladorTelefone@edit');
+Route::post('/contatos/{id}/telefones/{tid}', 'ControladorTelefone@update');

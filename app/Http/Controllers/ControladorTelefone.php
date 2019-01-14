@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Contato;
+use App\Telefone;
 
 class ControladorTelefone extends Controller
 {
@@ -11,9 +13,10 @@ class ControladorTelefone extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $idcon)
     {
-        //
+        $tels = Telefone::where('con_id', $idcon)->get();
+        return view('telefone.lista', compact('tels', 'idcon'));
     }
 
     /**
@@ -21,9 +24,9 @@ class ControladorTelefone extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $idcon)
     {
-        //
+        return view('telefone.novo', compact('idcon'));
     }
 
     /**
@@ -32,9 +35,16 @@ class ControladorTelefone extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $idcon)
     {
-        //
+        $validator = $request->validate([
+            'tel_numero' => 'required|numeric|min:11|lte:99999999999'
+        ]);
+        $tel = new Telefone();
+        $tel->tel_numero = $request->input('tel_numero');
+        $tel->con_id = $idcon;
+        $tel->save();
+        return redirect('/contatos/'. $idcon .'/telefones');
     }
 
     /**
@@ -54,9 +64,13 @@ class ControladorTelefone extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $idcon, $id)
     {
-        //
+        $tel = Telefone::find($id);
+        if (isset($tel)){
+            return view('telefone.edit');
+        }
+        return redirect('/contatos/'. $idcon .'/telefones');
     }
 
     /**
@@ -66,9 +80,18 @@ class ControladorTelefone extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $idcon, $id)
     {
-        //
+        $validator = $request->validate([
+            'tel_numero' => 'required|numeric|min:11|max:11|lte:99999999999'
+        ]);
+
+        $tel = Produto::find($id);
+        if (isset($tel)){
+            $tel->tel_numero = $request->input('tel_numero');
+            $tel->save();
+        }
+        return redirect('/contatos/'. $idcon .'/telefones');
     }
 
     /**
@@ -77,8 +100,12 @@ class ControladorTelefone extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $idcon, $id)
     {
-        //
+        $tel = Telefone::find($id);
+        if (isset($tel)){
+            $tel->delete();
+        }
+        return redirect('/contatos/'. $idcon .'/telefones');
     }
 }

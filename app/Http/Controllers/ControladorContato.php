@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Contato;
+use App\User;
 
 class ControladorContato extends Controller
 {
@@ -13,7 +15,8 @@ class ControladorContato extends Controller
      */
     public function index()
     {
-        //
+        $cons = Contato::all();
+        return view('contato.lista', compact('cons'));
     }
 
     /**
@@ -23,7 +26,7 @@ class ControladorContato extends Controller
      */
     public function create()
     {
-        //
+        return view('contato.novo');
     }
 
     /**
@@ -34,7 +37,15 @@ class ControladorContato extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = $request->validate([
+            'con_nome' => 'required|min:3',
+        ]);
+
+        $con = new Contato();
+        $con->con_nome = $request->input('con_nome');
+        $con->usu_id = auth()->user()->id;
+        $con->save();
+        return redirect('/contatos');        
     }
 
     /**
@@ -56,7 +67,11 @@ class ControladorContato extends Controller
      */
     public function edit($id)
     {
-        //
+        $con = Contato::find($id);
+        if (isset($con)){
+            return view('contato.edit', compact('con'));
+        }
+        return redirect('/contatos');
     }
 
     /**
@@ -68,7 +83,16 @@ class ControladorContato extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = $request->validate([
+            'con_nome' => 'required|min:3',
+        ]);
+
+        $con = Contato::find($id);
+        if (isset($con)){
+            $con->con_nome = $request->input('con_nome');
+            $con->save();
+        }
+        return redirect('/contatos');
     }
 
     /**
@@ -79,6 +103,13 @@ class ControladorContato extends Controller
      */
     public function destroy($id)
     {
-        //
+        $con = Contato::find($id);
+        if($con->telefones){
+            return redirect('/contatos')->with('status', 'Não pode apagar contato com telefone');
+        }
+        else if (isset($con)){
+            $con->delete();
+        }
+        return redirect('/contatos');
     }
 }
